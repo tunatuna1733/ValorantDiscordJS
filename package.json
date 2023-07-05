@@ -1,0 +1,14 @@
+{
+    "name": "valorantdiscordjs",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "tsx src/index.ts"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "tsx": "^3.12.7"
+    }
+}
