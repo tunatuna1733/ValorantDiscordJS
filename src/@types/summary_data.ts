@@ -1,4 +1,6 @@
-type MetaDataSummary = {
+import { Characters } from "./character";
+
+export type MetaDataSummary = {
   map: string;
   game_length: number;
   game_start: number;
@@ -12,12 +14,12 @@ type MetaDataSummary = {
   };
 };
 
-type MatchPlayerSummary = {
+export type MatchPlayerSummary = {
   puuid: string;
   name: string;
   tag: string;
   team: string;
-  character: string;
+  character: Characters;
   currenttier: number;
   currenttier_patched: string;
   stats: {
@@ -31,6 +33,7 @@ type MatchPlayerSummary = {
     legshots: number;
     // calculation needed ==============
     hs_rate: number;
+    kd_rate: number;
     kast: number;
     first_bloods: number;
     first_deaths: number;
@@ -42,10 +45,7 @@ type MatchPlayerSummary = {
   };
 };
 
-type MatchSummary = {
+export type MatchSummary = {
   metadata: MetaDataSummary;
-  players: {
-    red: MatchPlayerSummary[];
-    blue: MatchPlayerSummary[];
-  };
+  players: MatchPlayerSummary[];
 };

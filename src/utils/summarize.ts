@@ -1,3 +1,10 @@
+import { Characters } from "../@types/character";
+import {
+  MetaDataSummary,
+  MatchPlayerSummary,
+  MatchSummary,
+} from "../@types/summary_data";
+
 export const calculateKast = (
   kills: RawKills[],
   puuid: string,
@@ -110,15 +117,17 @@ export const summarizeMatchData = (data: RawMatchData) => {
     },
   };
   // player info
-  let red_players: MatchPlayerSummary[] = [];
-  let blue_players: MatchPlayerSummary[] = [];
+  let all_players_data: MatchPlayerSummary[] = [];
   data.players.all_players.map((player) => {
     const player_data: MatchPlayerSummary = {
       puuid: player.puuid,
       name: player.name,
       tag: player.tag,
       team: player.team,
-      character: player.character,
+      character:
+        player.character === "KAY/O"
+          ? "KAYO"
+          : (player.character as Characters),
       currenttier: player.currenttier,
       currenttier_patched: player.currenttier_patched,
       stats: {
@@ -136,6 +145,7 @@ export const summarizeMatchData = (data: RawMatchData) => {
               player.stats.bodyshots +
               player.stats.legshots)) *
           100,
+        kd_rate: player.stats.kills / player.stats.deaths,
         kast: calculateKast(data.kills, player.puuid, metadata.rounds),
         first_bloods: calculateFirstBloods(data.kills, player.puuid),
         first_deaths: calculateFirstDeaths(data.kills, player.puuid),
@@ -145,15 +155,14 @@ export const summarizeMatchData = (data: RawMatchData) => {
         money_spent: player.economy.spent.overall,
       },
     };
-    if (player_data.team === "Red") red_players.push(player_data);
-    else if (player_data.team === "Blue") blue_players.push(player_data);
+    all_players_data.push(player_data);
   });
+  all_players_data = all_players_data.sort((a, b) =>
+    a.stats.acs > b.stats.acs ? -1 : 1
+  );
   const match_summary: MatchSummary = {
     metadata: metadata,
-    players: {
-      red: red_players,
-      blue: blue_players,
-    },
+    players: all_players_data,
   };
   return match_summary;
 };
