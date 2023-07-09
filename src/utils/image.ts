@@ -114,7 +114,7 @@ export class ImageGeneration {
     const deaths_x = rank_x + 290;
     const assists_x = rank_x + 430;
     const kd_x = rank_x + 530;
-    const hs_x = rank_x + 625;
+    const hs_x = rank_x + 630;
     const econ_x = rank_x + 725;
     const kast_x = rank_x + 830;
     const fb_x = rank_x + 940;
@@ -153,41 +153,89 @@ export class ImageGeneration {
         coord_y + text_y_additive,
         rank_x - name_x
       );
-      context.fillText(
-        player.stats.acs.toFixed(0).toString(),
-        acs_x,
-        coord_y + text_y_additive
-      );
-      context.fillText(
-        player.stats.kills.toString(),
-        kills_x,
-        coord_y + text_y_additive
-      );
-      context.fillText(
-        player.stats.deaths.toString(),
-        deaths_x,
-        coord_y + text_y_additive
-      );
-      context.fillText(
-        player.stats.assists.toString(),
-        assists_x,
-        coord_y + text_y_additive
-      );
+      if (player.stats.acs.toFixed(0).toString().length === 2) {
+        context.fillText(
+          " " + player.stats.acs.toFixed(0).toString(),
+          acs_x,
+          coord_y + text_y_additive
+        );
+      } else {
+        context.fillText(
+          player.stats.acs.toFixed(0).toString(),
+          acs_x,
+          coord_y + text_y_additive
+        );
+      }
+      if (player.stats.kills.toString().length === 1) {
+        context.fillText(
+          " " + player.stats.kills.toString(),
+          kills_x,
+          coord_y + text_y_additive
+        );
+      } else {
+        context.fillText(
+          player.stats.kills.toString(),
+          kills_x,
+          coord_y + text_y_additive
+        );
+      }
+      if (player.stats.deaths.toString().length === 1) {
+        context.fillText(
+          " " + player.stats.deaths.toString(),
+          deaths_x,
+          coord_y + text_y_additive
+        );
+      } else {
+        context.fillText(
+          player.stats.deaths.toString(),
+          deaths_x,
+          coord_y + text_y_additive
+        );
+      }
+      if (player.stats.assists.toString().length === 1) {
+        context.fillText(
+          " " + player.stats.assists.toString(),
+          assists_x,
+          coord_y + text_y_additive
+        );
+      } else {
+        context.fillText(
+          player.stats.assists.toString(),
+          assists_x,
+          coord_y + text_y_additive
+        );
+      }
       context.fillText(
         player.stats.kd_rate.toFixed(1).toString(),
         kd_x,
         coord_y + text_y_additive
       );
-      context.fillText(
-        player.stats.hs_rate.toFixed(0).toString(),
-        hs_x,
-        coord_y + text_y_additive
-      );
-      context.fillText(
-        player.stats.econ.toFixed(0).toString(),
-        econ_x,
-        coord_y + text_y_additive
-      );
+      if (player.stats.hs_rate.toFixed(0).toString().length === 1) {
+        context.fillText(
+          " " + player.stats.hs_rate.toFixed(0).toString(),
+          hs_x,
+          coord_y + text_y_additive
+        );
+      } else {
+        context.fillText(
+          player.stats.hs_rate.toFixed(0).toString(),
+          hs_x,
+          coord_y + text_y_additive
+        );
+      }
+      if (player.stats.econ.toFixed(0).toString().length === 3) {
+        context.fillText(
+          player.stats.econ.toFixed(0).toString(),
+          econ_x - 5,
+          coord_y + text_y_additive
+        );
+      } else {
+        context.fillText(
+          player.stats.econ.toFixed(0).toString(),
+          econ_x,
+          coord_y + text_y_additive
+        );
+      }
       context.fillText(
         player.stats.kast.toFixed(0).toString(),
         kast_x,
