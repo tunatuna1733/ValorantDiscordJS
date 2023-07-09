@@ -157,9 +157,9 @@ export const summarizeMatchData = (data: RawMatchData) => {
     };
     all_players_data.push(player_data);
   });
-  all_players_data = all_players_data.sort((a, b) =>
-    a.stats.acs > b.stats.acs ? -1 : 1
-  );
+  all_players_data = all_players_data
+    .sort((a, b) => (a.stats.acs > b.stats.acs ? -1 : 1))
+    .sort((a, b) => (a.team > b.team ? -1 : 1));
   const match_summary: MatchSummary = {
     metadata: metadata,
     players: all_players_data,
