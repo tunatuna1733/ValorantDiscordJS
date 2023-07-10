@@ -55,6 +55,18 @@ export const getMMRHistoryFromPUUID = async (puuid: string, region: string) => {
   }
 };
 
+export const getLastCompetitiveMatchIDFromPUUID = async (
+  puuid: string,
+  region: string
+) => {
+  try {
+    const res = await getMMRHistoryFromPUUID(puuid, region);
+    return res.data[0].match_id;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // match related info
 export const getMatchDataFromMatchID = async (match_id: string) => {
   try {
