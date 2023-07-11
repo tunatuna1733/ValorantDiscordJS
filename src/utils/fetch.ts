@@ -88,13 +88,13 @@ export const getMMRHistoryFromPUUID = async (puuid: string, region: string) => {
   }
 };
 
-export const getLastCompetitiveMatchIDFromPUUID = async (
+export const getLastCompetitiveMatchFromPUUID = async (
   puuid: string,
   region: string
 ) => {
   try {
     const res = await getMMRHistoryFromPUUID(puuid, region);
-    return res?.data[0].match_id;
+    return { match_id: res.data[0].match_id, match_date: res.data[0].date_raw };
   } catch (error) {
     if (error instanceof AxiosError) {
       if (error.status === 404) {

@@ -4,6 +4,7 @@ import * as fs from "fs";
 import { AttachmentBuilder } from "discord.js";
 import { MatchSummary } from "../@types/summary_data";
 import { CharacterImage } from "../@types/character";
+import { ImageGenerationError } from "./error";
 
 export class ImageGeneration {
   character_images: CharacterImage;
@@ -93,177 +94,183 @@ export class ImageGeneration {
   public generateScoreboard = async (data: MatchSummary) => {
     const file_name = `${data.metadata.match_id}.png`;
     if (!fs.existsSync(`tmp/${file_name}`)) {
-      const scoreboard_name =
-        data.metadata.win_team === "Red" ? "scoreboard1" : "scoreboard2";
-      const canvas = createCanvas(1920, 1080);
-      const context = canvas.getContext("2d");
-      context.font = "48px NotoSans";
-      context.fillStyle = "#ffffff";
-      // draw background map image and scoreboard
-      const map_image = await loadImage(`assets/map/${data.metadata.map}.png`);
-      const scoreboard_image = await loadImage(
-        `assets/scoreboard/${scoreboard_name}.png`
-      );
-      const additive_x = (canvas.width - scoreboard_image.width) / 2;
-      const additive_y = (canvas.height - scoreboard_image.height) / 2;
-      context.drawImage(map_image, 0, 0, canvas.width, canvas.height);
-      context.drawImage(scoreboard_image, additive_x, additive_y);
-      // draw player stats
-      // some variables of coordinates
-      const character_x = 10 + additive_x;
-      const name_x = character_x + 80;
-      const rank_x = 475 + additive_x;
-      const acs_x = rank_x + 90;
-      const kills_x = rank_x + 195;
-      const deaths_x = rank_x + 290;
-      const assists_x = rank_x + 430;
-      const kd_x = rank_x + 530;
-      const hs_x = rank_x + 630;
-      const econ_x = rank_x + 725;
-      const kast_x = rank_x + 830;
-      const fb_x = rank_x + 940;
-      const fd_x = rank_x + 1010;
-      let coord_y = 42 + additive_y; // index y coordinate
-      const character_icon_width = 74;
-      const character_icon_height = 74;
-      const rank_icon_width = 64;
-      const rank_icon_height = 64;
-      const text_y_additive = 50;
-      const players_y = 74; // height of each player's stats row
-      const between_players_y = 5; // height of player divider
-      const between_teams_y = 42; // height of team divider
-      data.players.map((player, i) => {
-        // draw character icon and rank icon
-        const character = this.character_images[player.character];
-        const rank = this.rank_images[player.currenttier];
-        context.drawImage(
-          character,
-          character_x,
-          coord_y,
-          character_icon_width,
-          character_icon_height
+      try {
+        const scoreboard_name =
+          data.metadata.win_team === "Red" ? "scoreboard1" : "scoreboard2";
+        const canvas = createCanvas(1920, 1080);
+        const context = canvas.getContext("2d");
+        context.font = "48px NotoSans";
+        context.fillStyle = "#ffffff";
+        // draw background map image and scoreboard
+        const map_image = await loadImage(
+          `assets/map/${data.metadata.map}.png`
         );
-        context.drawImage(
-          rank,
-          rank_x + 5,
-          coord_y + 5,
-          rank_icon_width,
-          rank_icon_height
+        const scoreboard_image = await loadImage(
+          `assets/scoreboard/${scoreboard_name}.png`
         );
-        // draw info
-        context.fillText(
-          player.name,
-          name_x,
-          coord_y + text_y_additive,
-          rank_x - name_x
-        );
-        if (player.stats.acs.toFixed(0).toString().length === 2) {
+        const additive_x = (canvas.width - scoreboard_image.width) / 2;
+        const additive_y = (canvas.height - scoreboard_image.height) / 2;
+        context.drawImage(map_image, 0, 0, canvas.width, canvas.height);
+        context.drawImage(scoreboard_image, additive_x, additive_y);
+        // draw player stats
+        // some variables of coordinates
+        const character_x = 10 + additive_x;
+        const name_x = character_x + 80;
+        const rank_x = 475 + additive_x;
+        const acs_x = rank_x + 90;
+        const kills_x = rank_x + 195;
+        const deaths_x = rank_x + 290;
+        const assists_x = rank_x + 430;
+        const kd_x = rank_x + 530;
+        const hs_x = rank_x + 630;
+        const econ_x = rank_x + 725;
+        const kast_x = rank_x + 830;
+        const fb_x = rank_x + 940;
+        const fd_x = rank_x + 1010;
+        let coord_y = 42 + additive_y; // index y coordinate
+        const character_icon_width = 74;
+        const character_icon_height = 74;
+        const rank_icon_width = 64;
+        const rank_icon_height = 64;
+        const text_y_additive = 50;
+        const players_y = 74; // height of each player's stats row
+        const between_players_y = 5; // height of player divider
+        const between_teams_y = 42; // height of team divider
+        data.players.map((player, i) => {
+          // draw character icon and rank icon
+          const character = this.character_images[player.character];
+          const rank = this.rank_images[player.currenttier];
+          context.drawImage(
+            character,
+            character_x,
+            coord_y,
+            character_icon_width,
+            character_icon_height
+          );
+          context.drawImage(
+            rank,
+            rank_x + 5,
+            coord_y + 5,
+            rank_icon_width,
+            rank_icon_height
+          );
+          // draw info
           context.fillText(
-            " " + player.stats.acs.toFixed(0).toString(),
-            acs_x,
+            player.name,
+            name_x,
+            coord_y + text_y_additive,
+            rank_x - name_x
+          );
+          if (player.stats.acs.toFixed(0).toString().length === 2) {
+            context.fillText(
+              " " + player.stats.acs.toFixed(0).toString(),
+              acs_x,
+              coord_y + text_y_additive
+            );
+          } else {
+            context.fillText(
+              player.stats.acs.toFixed(0).toString(),
+              acs_x,
+              coord_y + text_y_additive
+            );
+          }
+          if (player.stats.kills.toString().length === 1) {
+            context.fillText(
+              " " + player.stats.kills.toString(),
+              kills_x,
+              coord_y + text_y_additive
+            );
+          } else {
+            context.fillText(
+              player.stats.kills.toString(),
+              kills_x,
+              coord_y + text_y_additive
+            );
+          }
+          if (player.stats.deaths.toString().length === 1) {
+            context.fillText(
+              " " + player.stats.deaths.toString(),
+              deaths_x,
+              coord_y + text_y_additive
+            );
+          } else {
+            context.fillText(
+              player.stats.deaths.toString(),
+              deaths_x,
+              coord_y + text_y_additive
+            );
+          }
+          if (player.stats.assists.toString().length === 1) {
+            context.fillText(
+              " " + player.stats.assists.toString(),
+              assists_x,
+              coord_y + text_y_additive
+            );
+          } else {
+            context.fillText(
+              player.stats.assists.toString(),
+              assists_x,
+              coord_y + text_y_additive
+            );
+          }
+          context.fillText(
+            player.stats.kd_rate.toFixed(1).toString(),
+            kd_x,
             coord_y + text_y_additive
           );
-        } else {
+          if (player.stats.hs_rate.toFixed(0).toString().length === 1) {
+            context.fillText(
+              " " + player.stats.hs_rate.toFixed(0).toString(),
+              hs_x,
+              coord_y + text_y_additive
+            );
+          } else {
+            context.fillText(
+              player.stats.hs_rate.toFixed(0).toString(),
+              hs_x,
+              coord_y + text_y_additive
+            );
+          }
+          if (player.stats.econ.toFixed(0).toString().length === 3) {
+            context.fillText(
+              player.stats.econ.toFixed(0).toString(),
+              econ_x - 5,
+              coord_y + text_y_additive
+            );
+          } else {
+            context.fillText(
+              player.stats.econ.toFixed(0).toString(),
+              econ_x,
+              coord_y + text_y_additive
+            );
+          }
           context.fillText(
-            player.stats.acs.toFixed(0).toString(),
-            acs_x,
+            player.stats.kast.toFixed(0).toString(),
+            kast_x,
             coord_y + text_y_additive
           );
-        }
-        if (player.stats.kills.toString().length === 1) {
           context.fillText(
-            " " + player.stats.kills.toString(),
-            kills_x,
+            player.stats.first_bloods.toString(),
+            fb_x,
             coord_y + text_y_additive
           );
-        } else {
           context.fillText(
-            player.stats.kills.toString(),
-            kills_x,
+            player.stats.first_deaths.toString(),
+            fd_x,
             coord_y + text_y_additive
           );
-        }
-        if (player.stats.deaths.toString().length === 1) {
-          context.fillText(
-            " " + player.stats.deaths.toString(),
-            deaths_x,
-            coord_y + text_y_additive
-          );
-        } else {
-          context.fillText(
-            player.stats.deaths.toString(),
-            deaths_x,
-            coord_y + text_y_additive
-          );
-        }
-        if (player.stats.assists.toString().length === 1) {
-          context.fillText(
-            " " + player.stats.assists.toString(),
-            assists_x,
-            coord_y + text_y_additive
-          );
-        } else {
-          context.fillText(
-            player.stats.assists.toString(),
-            assists_x,
-            coord_y + text_y_additive
-          );
-        }
-        context.fillText(
-          player.stats.kd_rate.toFixed(1).toString(),
-          kd_x,
-          coord_y + text_y_additive
-        );
-        if (player.stats.hs_rate.toFixed(0).toString().length === 1) {
-          context.fillText(
-            " " + player.stats.hs_rate.toFixed(0).toString(),
-            hs_x,
-            coord_y + text_y_additive
-          );
-        } else {
-          context.fillText(
-            player.stats.hs_rate.toFixed(0).toString(),
-            hs_x,
-            coord_y + text_y_additive
-          );
-        }
-        if (player.stats.econ.toFixed(0).toString().length === 3) {
-          context.fillText(
-            player.stats.econ.toFixed(0).toString(),
-            econ_x - 5,
-            coord_y + text_y_additive
-          );
-        } else {
-          context.fillText(
-            player.stats.econ.toFixed(0).toString(),
-            econ_x,
-            coord_y + text_y_additive
-          );
-        }
-        context.fillText(
-          player.stats.kast.toFixed(0).toString(),
-          kast_x,
-          coord_y + text_y_additive
-        );
-        context.fillText(
-          player.stats.first_bloods.toString(),
-          fb_x,
-          coord_y + text_y_additive
-        );
-        context.fillText(
-          player.stats.first_deaths.toString(),
-          fd_x,
-          coord_y + text_y_additive
-        );
-        coord_y += players_y + between_players_y;
-        if (i === 4) {
-          coord_y += between_teams_y - between_players_y;
-        }
-      });
-      // finally return discord attachment instance
-      // for debug at this time
-      const canvas_data = await canvas.encode("png");
-      await promises.writeFile(`tmp/${file_name}`, canvas_data);
+          coord_y += players_y + between_players_y;
+          if (i === 4) {
+            coord_y += between_teams_y - between_players_y;
+          }
+        });
+        // finally return discord attachment instance
+        // for debug at this time
+        const canvas_data = await canvas.encode("png");
+        await promises.writeFile(`tmp/${file_name}`, canvas_data);
+      } catch (error) {
+        throw new ImageGenerationError();
+      }
     }
     const attachment = new AttachmentBuilder(`tmp/${file_name}`, {
       name: file_name,

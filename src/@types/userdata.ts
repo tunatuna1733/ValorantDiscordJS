@@ -3,6 +3,7 @@ type RiotAccountData = {
   tag: string;
   puuid: string;
   last_match_id: string;
+  match_date: number;
 };
 
 type UserData = {

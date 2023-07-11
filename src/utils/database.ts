@@ -4,7 +4,11 @@ import {
   Collection,
   MongoServerError,
 } from "mongodb";
-import { DatabaseTransactionError, UnknownError } from "./error";
+import {
+  DatabaseTransactionError,
+  UnknownError,
+  UserNotRegistered,
+} from "./error";
 
 export class Database {
   client: MongoClient;
@@ -41,6 +45,29 @@ export class Database {
     } catch (error) {
       if (error instanceof MongoServerError) {
         throw new DatabaseTransactionError(error.message);
+      } else {
+        throw new UnknownError();
+      }
+    }
+  };
+
+  public getPuuidOfLastMatch = async (discord_id: string) => {
+    try {
+      const doc = await this.users.findOne({ discord_id: discord_id });
+      if (doc === null) throw new UserNotRegistered();
+      let puuid = "";
+      let match_date = 0;
+      doc.riot_accounts.map((riot_account) => {
+        if (match_date < riot_account.match_date) {
+          puuid = riot_account.puuid;
+        }
+      });
+      return puuid;
+    } catch (error) {
+      if (error instanceof MongoServerError) {
+        throw new DatabaseTransactionError(error.message);
+      } else if (error instanceof UserNotRegistered) {
+        throw new UserNotRegistered();
       } else {
         throw new UnknownError();
       }
@@ -89,8 +116,7 @@ export class Database {
     try {
       const doc = await this.users.findOne({ discord_id: discord_id });
       if (doc === null) {
-        // registeraion needed
-        return false;
+        throw new UserNotRegistered();
       } else {
         await this.users.updateOne(
           { discord_id: discord_id },
@@ -100,22 +126,24 @@ export class Database {
     } catch (error) {
       if (error instanceof MongoServerError) {
         throw new DatabaseTransactionError(error.message);
+      } else if (error instanceof UserNotRegistered) {
+        throw new UserNotRegistered();
       } else {
         throw new UnknownError();
       }
     }
   };
 
-  public updateMatchID = async (
+  public updateMatchInfo = async (
     discord_id: string,
     puuid: string,
-    match_id: string
+    match_id: string,
+    match_date: number
   ) => {
     try {
       const doc = await this.users.findOne({ discord_id: discord_id });
       if (doc === null) {
-        // registeraion needed
-        return false;
+        throw new UserNotRegistered();
       } else {
         let new_riot_account_data: RiotAccountData[] = [];
         const riot_account_data: RiotAccountData[] = doc.riot_accounts;
@@ -126,6 +154,7 @@ export class Database {
               tag: riot_account.tag,
               puuid: riot_account.puuid,
               last_match_id: match_id,
+              match_date: match_date,
             };
             new_riot_account_data.push(new_riot_account);
           } else {
@@ -146,6 +175,8 @@ export class Database {
     } catch (error) {
       if (error instanceof MongoServerError) {
         throw new DatabaseTransactionError(error.message);
+      } else if (error instanceof UserNotRegistered) {
+        throw new UserNotRegistered();
       } else {
         throw new UnknownError();
       }
