@@ -12,3 +12,8 @@ type UserData = {
   track_channel: string;
   riot_accounts: RiotAccountData[];
 };
+
+type UpdateData = {
+  match_id: string;
+  channel_id: string;
+};
