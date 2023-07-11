@@ -6,10 +6,10 @@ export const checkMatchForAllAccounts = async (db_instance: Database) => {
   data.map((user_data) => {
     user_data.riot_accounts.map((riot_account) => {
       const puuid = riot_account.puuid;
-      const api_match_id = await getLastCompetitiveMatchIDFromPUUID(
+      /*const api_match_id = await getLastCompetitiveMatchIDFromPUUID(
         puuid,
         "ap"
-      );
+      );*/
     });
   });
 };

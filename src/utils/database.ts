@@ -1,4 +1,10 @@
-import { MongoClient, ServerApiVersion, Collection } from "mongodb";
+import {
+  MongoClient,
+  ServerApiVersion,
+  Collection,
+  MongoServerError,
+} from "mongodb";
+import { DatabaseTransactionError, UnknownError } from "./error";
 
 export class Database {
   client: MongoClient;
@@ -19,18 +25,26 @@ export class Database {
   };
 
   public getAllCollections = async () => {
-    const cursor = this.users.find();
-    const user_data_list: UserData[] = [];
-    for await (const doc of cursor) {
-      const user_data: UserData = {
-        discord_id: doc.discord_id,
-        track_match: doc.track_match,
-        track_channel: doc.track_channel,
-        riot_accounts: doc.riot_accounts,
-      };
-      user_data_list.push(user_data);
+    try {
+      const cursor = this.users.find();
+      const user_data_list: UserData[] = [];
+      for await (const doc of cursor) {
+        const user_data: UserData = {
+          discord_id: doc.discord_id,
+          track_match: doc.track_match,
+          track_channel: doc.track_channel,
+          riot_accounts: doc.riot_accounts,
+        };
+        user_data_list.push(user_data);
+      }
+      return user_data_list;
+    } catch (error) {
+      if (error instanceof MongoServerError) {
+        throw new DatabaseTransactionError(error.message);
+      } else {
+        throw new UnknownError();
+      }
     }
-    return user_data_list;
   };
 
   public upsertUser = async (
@@ -49,6 +63,13 @@ export class Database {
         };
         await this.users.insertOne(user_data);
       } else {
+        // check for duplication
+        doc.riot_accounts.map((riot_account) => {
+          if (riot_account.puuid === riot_account_data.puuid) {
+            // throw
+            return;
+          }
+        });
         // add new riot account
         await this.users.updateOne(
           { discord_id: discord_id },
@@ -56,7 +77,11 @@ export class Database {
         );
       }
     } catch (error) {
-      throw error;
+      if (error instanceof MongoServerError) {
+        throw new DatabaseTransactionError(error.message);
+      } else {
+        throw new UnknownError();
+      }
     }
   };
 
@@ -73,7 +98,11 @@ export class Database {
         );
       }
     } catch (error) {
-      throw error;
+      if (error instanceof MongoServerError) {
+        throw new DatabaseTransactionError(error.message);
+      } else {
+        throw new UnknownError();
+      }
     }
   };
 
@@ -115,7 +144,11 @@ export class Database {
         );
       }
     } catch (error) {
-      throw error;
+      if (error instanceof MongoServerError) {
+        throw new DatabaseTransactionError(error.message);
+      } else {
+        throw new UnknownError();
+      }
     }
   };
 }

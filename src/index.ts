@@ -1,13 +1,17 @@
-import { Client, Events, GatewayIntentBits } from "discord.js";
-import { data } from "./commands/command_data";
+import { GatewayIntentBits } from "discord.js";
+import { SapphireClient } from "@sapphire/framework";
+import { Database } from "./utils/database";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const client = new Client({
+const client = new SapphireClient({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  loadMessageCommandListeners: true,
 });
 
-client.once(Events.ClientReady, async (c) => {
-  await c.application.commands.set(data);
-  console.log(`Bot Ready! Username: ${c.user.tag}`);
-});
+const db_url =
+  typeof process.env["MONGO_URL"] === "string" ? process.env["MONGO_URL"] : "";
+export const database = new Database(db_url);
+await database.init();
 
 client.login(process.env["DISCORD_TOKEN"]);

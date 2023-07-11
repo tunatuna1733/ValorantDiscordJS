@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
+import { ResourceNotFoundError, UnknownAPIError, UnknownError } from "./error";
 
 const BASE_URL = "https://api.henrikdev.xyz/valorant";
 
@@ -11,7 +12,15 @@ export const getAccountDataFromNameTag = async (name: string, tag: string) => {
     const response_data = res.data;
     return response_data;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
   }
 };
 
@@ -23,7 +32,15 @@ export const getAccountDataFromPUUID = async (puuid: string) => {
     const response_data = res.data;
     return response_data;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
   }
 };
 
@@ -39,7 +56,15 @@ export const getCurrentRankFromPUUID = async (
     const response_data = res.data;
     return response_data;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
   }
 };
 
@@ -51,7 +76,15 @@ export const getMMRHistoryFromPUUID = async (puuid: string, region: string) => {
     const response_data = res.data;
     return response_data;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
   }
 };
 
@@ -61,9 +94,17 @@ export const getLastCompetitiveMatchIDFromPUUID = async (
 ) => {
   try {
     const res = await getMMRHistoryFromPUUID(puuid, region);
-    return res.data[0].match_id;
+    return res?.data[0].match_id;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
   }
 };
 
@@ -76,7 +117,15 @@ export const getMatchDataFromMatchID = async (match_id: string) => {
     const response_data = res.data;
     return response_data;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
   }
 };
 
@@ -91,6 +140,14 @@ export const getMatchDataHistoryFromPUUID = async (
     const response_data = res.data;
     return response_data;
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
   }
 };
