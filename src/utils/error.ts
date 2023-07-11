@@ -6,7 +6,8 @@ export class UnknownError extends Error {
 }
 export class ResourceNotFoundError extends Error {}
 export class UnknownAPIError extends UnknownError {}
-export class UserNotRegistered extends Error {}
+export class UserNotRegisteredError extends Error {}
+export class DuplicateRiotAccountError extends Error {}
 export class DatabaseTransactionError extends Error {
   constructor(e?: string) {
     super(e);

@@ -344,7 +344,7 @@ type RawCurrentRankResponse = {
   status: number;
   data: {
     currenttier: number;
-    currenttier_patched: string;
+    currenttierpatched: string;
     images: {
       small: string;
       large: string;

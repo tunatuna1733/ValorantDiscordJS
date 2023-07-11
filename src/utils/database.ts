@@ -6,8 +6,9 @@ import {
 } from "mongodb";
 import {
   DatabaseTransactionError,
+  DuplicateRiotAccountError,
   UnknownError,
-  UserNotRegistered,
+  UserNotRegisteredError,
 } from "./error";
 
 export class Database {
@@ -54,20 +55,21 @@ export class Database {
   public getPuuidOfLastMatch = async (discord_id: string) => {
     try {
       const doc = await this.users.findOne({ discord_id: discord_id });
-      if (doc === null) throw new UserNotRegistered();
+      if (doc === null) throw new UserNotRegisteredError();
       let puuid = "";
       let match_date = 0;
       doc.riot_accounts.map((riot_account) => {
         if (match_date < riot_account.match_date) {
           puuid = riot_account.puuid;
+          match_date = riot_account.match_date;
         }
       });
       return puuid;
     } catch (error) {
       if (error instanceof MongoServerError) {
         throw new DatabaseTransactionError(error.message);
-      } else if (error instanceof UserNotRegistered) {
-        throw new UserNotRegistered();
+      } else if (error instanceof UserNotRegisteredError) {
+        throw new UserNotRegisteredError();
       } else {
         throw new UnknownError();
       }
@@ -93,8 +95,7 @@ export class Database {
         // check for duplication
         doc.riot_accounts.map((riot_account) => {
           if (riot_account.puuid === riot_account_data.puuid) {
-            // throw
-            return;
+            throw new DuplicateRiotAccountError();
           }
         });
         // add new riot account
@@ -106,6 +107,8 @@ export class Database {
     } catch (error) {
       if (error instanceof MongoServerError) {
         throw new DatabaseTransactionError(error.message);
+      } else if (error instanceof DuplicateRiotAccountError) {
+        throw new DuplicateRiotAccountError();
       } else {
         throw new UnknownError();
       }
@@ -116,7 +119,7 @@ export class Database {
     try {
       const doc = await this.users.findOne({ discord_id: discord_id });
       if (doc === null) {
-        throw new UserNotRegistered();
+        throw new UserNotRegisteredError();
       } else {
         await this.users.updateOne(
           { discord_id: discord_id },
@@ -126,8 +129,8 @@ export class Database {
     } catch (error) {
       if (error instanceof MongoServerError) {
         throw new DatabaseTransactionError(error.message);
-      } else if (error instanceof UserNotRegistered) {
-        throw new UserNotRegistered();
+      } else if (error instanceof UserNotRegisteredError) {
+        throw new UserNotRegisteredError();
       } else {
         throw new UnknownError();
       }
@@ -143,7 +146,7 @@ export class Database {
     try {
       const doc = await this.users.findOne({ discord_id: discord_id });
       if (doc === null) {
-        throw new UserNotRegistered();
+        throw new UserNotRegisteredError();
       } else {
         let new_riot_account_data: RiotAccountData[] = [];
         const riot_account_data: RiotAccountData[] = doc.riot_accounts;
@@ -175,8 +178,8 @@ export class Database {
     } catch (error) {
       if (error instanceof MongoServerError) {
         throw new DatabaseTransactionError(error.message);
-      } else if (error instanceof UserNotRegistered) {
-        throw new UserNotRegistered();
+      } else if (error instanceof UserNotRegisteredError) {
+        throw new UserNotRegisteredError();
       } else {
         throw new UnknownError();
       }

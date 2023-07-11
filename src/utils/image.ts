@@ -139,7 +139,12 @@ export class ImageGeneration {
         data.players.map((player, i) => {
           // draw character icon and rank icon
           const character = this.character_images[player.character];
-          const rank = this.rank_images[player.currenttier];
+          let rank: Image;
+          if (player.currenttier === 0) {
+            rank = this.rank_images[0];
+          } else {
+            rank = this.rank_images[player.currenttier - 2];
+          }
           context.drawImage(
             character,
             character_x,
@@ -249,11 +254,19 @@ export class ImageGeneration {
             kast_x,
             coord_y + text_y_additive
           );
-          context.fillText(
-            player.stats.first_bloods.toString(),
-            fb_x,
-            coord_y + text_y_additive
-          );
+          if (player.stats.first_bloods.toString().length === 2) {
+            context.fillText(
+              player.stats.first_bloods.toString(),
+              fb_x - 10,
+              coord_y + text_y_additive
+            );
+          } else {
+            context.fillText(
+              player.stats.first_bloods.toString(),
+              fb_x,
+              coord_y + text_y_additive
+            );
+          }
           context.fillText(
             player.stats.first_deaths.toString(),
             fd_x,
