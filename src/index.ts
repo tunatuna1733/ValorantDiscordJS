@@ -6,10 +6,19 @@ import { ImageGeneration } from "./utils/image";
 import { updateLastMatchInfo } from "./utils/task";
 dotenv.config();
 
-const client = new SapphireClient({
+export const client = new SapphireClient({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
   loadMessageCommandListeners: true,
 });
+
+export const log_channel_id =
+  typeof process.env["COMMAND_LOG_CHANNEL"] === "string"
+    ? process.env["COMMAND_LOG_CHANNEL"]
+    : "";
+export const error_channel_id =
+  typeof process.env["ERROR_LOG_CHANNEL"] === "string"
+    ? process.env["ERROR_LOG_CHANNEL"]
+    : "";
 
 const db_url =
   typeof process.env["MONGO_URL"] === "string" ? process.env["MONGO_URL"] : "";

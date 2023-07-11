@@ -11,6 +11,7 @@ import {
   DuplicateRiotAccountError,
   ResourceNotFoundError,
   UnknownAPIError,
+  sendErrorInfo,
 } from "../utils/error";
 
 export class RegisterCommand extends Command {
@@ -72,6 +73,14 @@ export class RegisterCommand extends Command {
           .setThumbnail(account_data.data.card.small);
         await interaction.editReply({ embeds: [embed] });
       } catch (error) {
+        await sendErrorInfo(error, RegisterCommand.name, {
+          name: "lastmatch",
+          executor: {
+            id: interaction.user.id,
+            name: interaction.user.username,
+            guild_name: interaction.guild?.name,
+          },
+        });
         if (error instanceof DatabaseTransactionError) {
           await interaction.editReply({
             content: `Could not update databse record. Try again later!\nDatabase ERROR: ${error.message}`,
@@ -87,6 +96,14 @@ export class RegisterCommand extends Command {
         }
       }
     } catch (error) {
+      await sendErrorInfo(error, RegisterCommand.name, {
+        name: "lastmatch",
+        executor: {
+          id: interaction.user.id,
+          name: interaction.user.username,
+          guild_name: interaction.guild?.name,
+        },
+      });
       if (error instanceof ResourceNotFoundError) {
         await interaction.editReply({
           content: "Account Not Found!",

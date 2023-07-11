@@ -12,6 +12,7 @@ import {
   ResourceNotFoundError,
   UnknownAPIError,
   UserNotRegisteredError,
+  sendErrorInfo,
 } from "../utils/error";
 import { ImageGeneration } from "../utils/image";
 
@@ -77,6 +78,14 @@ export class LastmatchCommand extends Command {
         );
       interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (error) {
+      await sendErrorInfo(error, LastmatchCommand.name, {
+        name: "lastmatch",
+        executor: {
+          id: interaction.user.id,
+          name: interaction.user.username,
+          guild_name: interaction.guild?.name,
+        },
+      });
       if (error instanceof ResourceNotFoundError) {
         await interaction.editReply({
           content: "Could not find match. Try again later!",

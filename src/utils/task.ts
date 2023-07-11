@@ -1,9 +1,5 @@
 import { database } from "..";
-import {
-  DatabaseTransactionError,
-  ResourceNotFoundError,
-  UnknownAPIError,
-} from "./error";
+import { sendErrorInfo } from "./error";
 import { getLastCompetitiveMatchFromPUUID } from "./fetch";
 
 export const updateLastMatchInfo = async () => {
@@ -27,11 +23,7 @@ export const updateLastMatchInfo = async () => {
             );
           }
         } catch (error) {
-          if (error instanceof ResourceNotFoundError) {
-          } else if (error instanceof UnknownAPIError) {
-          } else if (error instanceof DatabaseTransactionError) {
-          } else {
-          }
+          await sendErrorInfo(error, updateLastMatchInfo.name);
         }
       });
     })

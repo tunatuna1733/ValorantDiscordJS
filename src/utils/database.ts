@@ -115,7 +115,11 @@ export class Database {
     }
   };
 
-  public updateTrackMatch = async (discord_id: string, toggle: boolean) => {
+  public updateTrackMatch = async (
+    discord_id: string,
+    toggle: boolean,
+    track_channel: string
+  ) => {
     try {
       const doc = await this.users.findOne({ discord_id: discord_id });
       if (doc === null) {
@@ -123,7 +127,7 @@ export class Database {
       } else {
         await this.users.updateOne(
           { discord_id: discord_id },
-          { $set: { track_match: toggle } }
+          { $set: { track_match: toggle, track_channel: track_channel } }
         );
       }
     } catch (error) {
