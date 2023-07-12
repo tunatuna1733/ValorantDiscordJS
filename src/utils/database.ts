@@ -125,10 +125,17 @@ export class Database {
       if (doc === null) {
         throw new UserNotRegisteredError();
       } else {
-        await this.users.updateOne(
-          { discord_id: discord_id },
-          { $set: { track_match: toggle, track_channel: track_channel } }
-        );
+        if (toggle) {
+          await this.users.updateOne(
+            { discord_id: discord_id },
+            { $set: { track_match: toggle, track_channel: track_channel } }
+          );
+        } else {
+          await this.users.updateOne(
+            { discord_id: discord_id },
+            { $set: { track_match: toggle } }
+          );
+        }
       }
     } catch (error) {
       if (error instanceof MongoServerError) {
