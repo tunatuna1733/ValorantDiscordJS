@@ -49,3 +49,14 @@ export type MatchSummary = {
   metadata: MetaDataSummary;
   players: MatchPlayerSummary[];
 };
+
+export type CompetitiveMatchSummary = {
+  character: Characters;
+  currenttier: number;
+  acs: number;
+  kills: number;
+  deaths: number;
+  assists: number;
+  win_lose: string;
+  map: string;
+};

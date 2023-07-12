@@ -23,7 +23,8 @@ export class ImageGenerationError extends Error {}
 export const sendErrorInfo = async (
   error: Error,
   where: string,
-  command_info?: CommandInfo
+  command_info?: CommandInfo,
+  extra_info?: string
 ) => {
   const error_channel = client.channels.cache.get(error_channel_id);
   if (typeof error_channel === "undefined" || !error_channel.isTextBased())
@@ -38,6 +39,14 @@ export const sendErrorInfo = async (
         value: `By: ${command_info.executor.name} (id: ${command_info.executor.id})\nIn: ${command_info.executor.guild_name}`,
       },
     ]);
+    if (extra_info) {
+      embed.addFields([
+        {
+          name: "Extra Info",
+          value: extra_info,
+        },
+      ]);
+    }
   }
   await error_channel.send({ embeds: [embed] });
 };

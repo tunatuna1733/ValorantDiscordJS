@@ -1,6 +1,13 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { ResourceNotFoundError, UnknownAPIError, UnknownError } from "./error";
 import { henrik_api_key } from "..";
+import {
+  RawAccountDataResponse,
+  RawCurrentRankResponse,
+  RawMMRHistoryResponse,
+  RawMatchDataResponse,
+  RawMultipleMatchDataResponse,
+} from "../@types/raw_response";
 
 const BASE_URL = "https://api.henrikdev.xyz/valorant";
 
@@ -142,6 +149,30 @@ export const getMatchDataHistoryFromPUUID = async (
   try {
     const res: AxiosResponse<RawMultipleMatchDataResponse> = await axios.get(
       `${BASE_URL}/v3/by-puuid/matches/${region}/${puuid}`,
+      { headers: { Authorization: henrik_api_key } }
+    );
+    const response_data = res.data;
+    return response_data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.status === 404) {
+        throw new ResourceNotFoundError();
+      } else {
+        throw new UnknownAPIError(error.message);
+      }
+    } else {
+      throw new UnknownError();
+    }
+  }
+};
+
+export const getCompetitiveHistoryFromPUUID = async (
+  puuid: string,
+  region: string
+) => {
+  try {
+    const res: AxiosResponse<RawMultipleMatchDataResponse> = await axios.get(
+      `${BASE_URL}/v3/by-puuid/matches/${region}/${puuid}?mode=competitive`,
       { headers: { Authorization: henrik_api_key } }
     );
     const response_data = res.data;

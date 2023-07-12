@@ -1,4 +1,6 @@
-type RawAccountData = {
+import { Characters } from "./character";
+
+export type RawAccountData = {
   puuid: string;
   region: string;
   account_level: number;
@@ -14,7 +16,7 @@ type RawAccountData = {
   last_update_raw: number;
 };
 
-type RawMetaData = {
+export type RawMetaData = {
   map: string;
   game_version: string;
   game_length: number;
@@ -35,13 +37,13 @@ type RawMetaData = {
   cluster: string;
 };
 
-type RawPlayerData = {
+export type RawPlayerData = {
   puuid: string;
   name: string;
   tag: string;
   team: string;
   level: number;
-  character: string;
+  character: Characters;
   currenttier: number;
   currenttier_patched: string;
   player_card: string;
@@ -109,7 +111,7 @@ type RawPlayerData = {
   damage_received: number;
 };
 
-type RawObserverData = {
+export type RawObserverData = {
   puuid: string;
   name: string;
   tag: string;
@@ -132,7 +134,7 @@ type RawObserverData = {
   party_id: string;
 };
 
-type RawTeamData = {
+export type RawTeamData = {
   has_won: boolean;
   rounds_won: number;
   rounds_lost: number;
@@ -150,7 +152,7 @@ type RawTeamData = {
   };
 };
 
-type RawKillEventInPlayerStats = {
+export type RawKillEventInPlayerStats = {
   kill_time_in_round: number;
   kill_time_in_match: number;
   killer_puuid: string;
@@ -187,11 +189,11 @@ type RawKillEventInPlayerStats = {
   }[];
 };
 
-type RawKills = RawKillEventInPlayerStats & {
+export type RawKills = RawKillEventInPlayerStats & {
   round: number;
 };
 
-type RawRoundData = {
+export type RawRoundData = {
   winning_team: string;
   end_type: string;
   bomb_planted: boolean;
@@ -293,7 +295,7 @@ type RawRoundData = {
   };
 };
 
-type RawMMRData = {
+export type RawMMRData = {
   currenttier: number;
   currenttier_patched: string;
   images: {
@@ -315,7 +317,7 @@ type RawMMRData = {
   date_raw: number;
 };
 
-type RawMatchData = {
+export type RawMatchData = {
   metadata: RawMetaData;
   players: {
     all_players: RawPlayerData[];
@@ -335,12 +337,12 @@ type RawMatchData = {
   kills: RawKills[];
 };
 
-type RawAccountDataResponse = {
+export type RawAccountDataResponse = {
   status: number;
   data: RawAccountData;
 };
 
-type RawCurrentRankResponse = {
+export type RawCurrentRankResponse = {
   status: number;
   data: {
     currenttier: number;
@@ -360,17 +362,17 @@ type RawCurrentRankResponse = {
   };
 };
 
-type RawMatchDataResponse = {
+export type RawMatchDataResponse = {
   status: number;
   data: RawMatchData;
 };
 
-type RawMultipleMatchDataResponse = {
+export type RawMultipleMatchDataResponse = {
   status: number;
   data: RawMatchData[];
 };
 
-type RawMMRHistoryResponse = {
+export type RawMMRHistoryResponse = {
   status: number;
   name: string;
   tag: string;

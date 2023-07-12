@@ -1,8 +1,10 @@
 import { Characters } from "../@types/character";
+import { RawKills, RawMatchData } from "../@types/raw_response";
 import {
   MetaDataSummary,
   MatchPlayerSummary,
   MatchSummary,
+  CompetitiveMatchSummary,
 } from "../@types/summary_data";
 
 export const calculateKast = (
@@ -165,4 +167,35 @@ export const summarizeMatchData = (data: RawMatchData) => {
     players: all_players_data,
   };
   return match_summary;
+};
+
+export const summarizaCompetitiveData = (data: RawMatchData, puuid: string) => {
+  let player_index = 0;
+  let win_lose = "Draw";
+  const win_team =
+    data.teams.red.has_won === true
+      ? "Red"
+      : data.teams.blue.has_won === true
+      ? "Blue"
+      : "Unknown";
+  data.players.all_players.map((player, index) => {
+    if (player.puuid === puuid) {
+      player_index = index;
+      if (player.team === win_team) win_lose = "Win";
+      else win_lose = "Lose";
+    }
+  });
+  const summarized_data: CompetitiveMatchSummary = {
+    character: data.players.all_players[player_index].character,
+    currenttier: data.players.all_players[player_index].currenttier,
+    acs:
+      data.players.all_players[player_index].stats.score /
+      data.metadata.rounds_played,
+    kills: data.players.all_players[player_index].stats.kills,
+    deaths: data.players.all_players[player_index].stats.deaths,
+    assists: data.players.all_players[player_index].stats.assists,
+    win_lose: win_lose,
+    map: data.metadata.map,
+  };
+  return summarized_data;
 };

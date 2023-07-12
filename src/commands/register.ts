@@ -105,14 +105,22 @@ export class RegisterCommand extends Command {
         }
       }
     } catch (error) {
-      await sendErrorInfo(error, RegisterCommand.name, {
-        name: "lastmatch",
-        executor: {
-          id: interaction.user.id,
-          name: interaction.user.username,
-          guild_name: interaction.guild?.name,
+      await sendErrorInfo(
+        error,
+        RegisterCommand.name,
+        {
+          name: "register",
+          executor: {
+            id: interaction.user.id,
+            name: interaction.user.username,
+            guild_name: interaction.guild?.name,
+          },
         },
-      });
+        `id: ${interaction.options.getString(
+          "id",
+          true
+        )}, tag: ${interaction.options.getString("tag", true)}`
+      );
       if (error instanceof ResourceNotFoundError) {
         await interaction.editReply({
           content: "Account Not Found!",

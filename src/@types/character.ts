@@ -8,6 +8,7 @@ export type Characters =
   | "Raze"
   | "Chamber"
   | "KAYO"
+  | "KAY/O"
   | "Skye"
   | "Cypher"
   | "Sova"
