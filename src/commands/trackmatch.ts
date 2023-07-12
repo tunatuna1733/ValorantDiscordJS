@@ -5,6 +5,7 @@ import {
   UserNotRegisteredError,
   sendErrorInfo,
 } from "../utils/error";
+import { logCommand } from "../utils/logger";
 
 export class TrackmatchCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -25,6 +26,14 @@ export class TrackmatchCommand extends Command {
   ) => {
     try {
       await interaction.deferReply({ ephemeral: true });
+      await logCommand({
+        name: "trackmatch",
+        executor: {
+          id: interaction.user.id,
+          name: interaction.user.username,
+          guild_name: interaction.guild?.name,
+        },
+      });
       const discord_id = interaction.user.id;
       const channel_id = interaction.channelId;
       await database.updateTrackMatch(discord_id, true, channel_id);

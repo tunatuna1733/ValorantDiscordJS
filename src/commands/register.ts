@@ -13,6 +13,7 @@ import {
   UnknownAPIError,
   sendErrorInfo,
 } from "../utils/error";
+import { logCommand } from "../utils/logger";
 
 export class RegisterCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -47,6 +48,14 @@ export class RegisterCommand extends Command {
   ) => {
     try {
       await interaction.deferReply({ ephemeral: true });
+      await logCommand({
+        name: "register",
+        executor: {
+          id: interaction.user.id,
+          name: interaction.user.username,
+          guild_name: interaction.guild?.name,
+        },
+      });
       const discord_id = interaction.user.id;
       const riot_id = interaction.options.getString("id", true);
       const riot_tag = interaction.options.getString("tag", true);
@@ -74,7 +83,7 @@ export class RegisterCommand extends Command {
         await interaction.editReply({ embeds: [embed] });
       } catch (error) {
         await sendErrorInfo(error, RegisterCommand.name, {
-          name: "lastmatch",
+          name: "register",
           executor: {
             id: interaction.user.id,
             name: interaction.user.username,

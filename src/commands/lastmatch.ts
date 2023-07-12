@@ -15,6 +15,7 @@ import {
   sendErrorInfo,
 } from "../utils/error";
 import { ImageGeneration } from "../utils/image";
+import { logCommand } from "../utils/logger";
 
 export class LastmatchCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -35,6 +36,14 @@ export class LastmatchCommand extends Command {
   ) => {
     try {
       await interaction.deferReply();
+      await logCommand({
+        name: "lastmatch",
+        executor: {
+          id: interaction.user.id,
+          name: interaction.user.username,
+          guild_name: interaction.guild?.name,
+        },
+      });
       const discord_id = interaction.user.id;
       const puuid = await database.getPuuidOfLastMatch(discord_id);
       const account_data = await getAccountDataFromPUUID(puuid);
