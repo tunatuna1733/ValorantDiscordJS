@@ -20,6 +20,8 @@ export const error_channel_id =
     ? process.env["ERROR_LOG_CHANNEL"]
     : "";
 
+export const henrik_api_key = process.env["HENRIK_API_KEY"];
+
 const db_url =
   typeof process.env["MONGO_URL"] === "string" ? process.env["MONGO_URL"] : "";
 export const database = new Database(db_url);

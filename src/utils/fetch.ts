@@ -1,5 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { ResourceNotFoundError, UnknownAPIError, UnknownError } from "./error";
+import { henrik_api_key } from "..";
 
 const BASE_URL = "https://api.henrikdev.xyz/valorant";
 
@@ -7,7 +8,8 @@ const BASE_URL = "https://api.henrikdev.xyz/valorant";
 export const getAccountDataFromNameTag = async (name: string, tag: string) => {
   try {
     const res: AxiosResponse<RawAccountDataResponse> = await axios.get(
-      `${BASE_URL}/v1/account/${name}/${tag}`
+      `${BASE_URL}/v1/account/${name}/${tag}`,
+      { headers: { Authorization: henrik_api_key } }
     );
     const response_data = res.data;
     return response_data;
@@ -27,7 +29,8 @@ export const getAccountDataFromNameTag = async (name: string, tag: string) => {
 export const getAccountDataFromPUUID = async (puuid: string) => {
   try {
     const res: AxiosResponse<RawAccountDataResponse> = await axios.get(
-      `${BASE_URL}/v1/by-puuid/account/${puuid}`
+      `${BASE_URL}/v1/by-puuid/account/${puuid}`,
+      { headers: { Authorization: henrik_api_key } }
     );
     const response_data = res.data;
     return response_data;
@@ -51,7 +54,8 @@ export const getCurrentRankFromPUUID = async (
 ) => {
   try {
     const res: AxiosResponse<RawCurrentRankResponse> = await axios.get(
-      `${BASE_URL}/v1/by-puuid/mmr/${region}/${puuid}`
+      `${BASE_URL}/v1/by-puuid/mmr/${region}/${puuid}`,
+      { headers: { Authorization: henrik_api_key } }
     );
     const response_data = res.data;
     return response_data;
@@ -71,7 +75,8 @@ export const getCurrentRankFromPUUID = async (
 export const getMMRHistoryFromPUUID = async (puuid: string, region: string) => {
   try {
     const res: AxiosResponse<RawMMRHistoryResponse> = await axios.get(
-      `${BASE_URL}/v1/by-puuid/mmr-history/${region}/${puuid}`
+      `${BASE_URL}/v1/by-puuid/mmr-history/${region}/${puuid}`,
+      { headers: { Authorization: henrik_api_key } }
     );
     const response_data = res.data;
     return response_data;
@@ -112,7 +117,8 @@ export const getLastCompetitiveMatchFromPUUID = async (
 export const getMatchDataFromMatchID = async (match_id: string) => {
   try {
     const res: AxiosResponse<RawMatchDataResponse> = await axios.get(
-      `${BASE_URL}/v2/match/${match_id}`
+      `${BASE_URL}/v2/match/${match_id}`,
+      { headers: { Authorization: henrik_api_key } }
     );
     const response_data = res.data;
     return response_data;
@@ -135,7 +141,8 @@ export const getMatchDataHistoryFromPUUID = async (
 ) => {
   try {
     const res: AxiosResponse<RawMultipleMatchDataResponse> = await axios.get(
-      `${BASE_URL}/v3/by-puuid/matches/${region}/${puuid}`
+      `${BASE_URL}/v3/by-puuid/matches/${region}/${puuid}`,
+      { headers: { Authorization: henrik_api_key } }
     );
     const response_data = res.data;
     return response_data;
