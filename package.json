@@ -6,8 +6,8 @@
     "type": "module",
     "scripts": {
         "start": "node dist/index.js",
-        "build": "tsup src/**/*.ts --format esm",
-        "dev": "tsup src/**/*.ts --format esm && node dist/index.js"
+        "build": "tsup src/*.ts src/**/*.ts --format esm",
+        "dev": "tsup src/*.ts src/**/*.ts --format esm && node dist/index.js"
     },
     "author": "",
     "license": "ISC",
