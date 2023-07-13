@@ -29,7 +29,7 @@ export class HelloCommand extends Command {
     const user_mention = userMention(user_to_greet.id);
 
     return interaction.reply({
-      content: `Hey ${user_mention}`,
+      content: `Hey ${user_mention} <a:AgentNeon:930135715478646795>`,
       allowedMentions: {
         users: [user_to_greet.id],
       },
