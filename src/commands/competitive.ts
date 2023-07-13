@@ -7,7 +7,12 @@ import {
 } from "../utils/fetch";
 import { CompetitiveMatchSummary } from "../@types/summary_data";
 import { summarizaCompetitiveData } from "../utils/summarize";
-import { EmbedBuilder } from "discord.js";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+} from "discord.js";
 import { CharacterEmojis } from "../constants/CharacterEmojis";
 import {
   sendErrorInfo,
@@ -63,12 +68,13 @@ export class CompetitiveCommand extends Command {
         iconURL: player_icon,
         url: `https://tracker.gg/valorant/profile/riot/${player_name}%23${player_tag}/overview`,
       });
+      const row = new ActionRowBuilder<ButtonBuilder>();
       summarized_match_list.map((d, i) => {
         const score_text = "```" + d.score.red + " - " + d.score.blue + "```";
         const name_text = `${i + 1}. ${d.map} ${d.win_lose} ${score_text}`;
-        const value_text = `${i + 1}. ${CharacterEmojis[d.character]} ACS: ${
-          d.acs
-        } ${d.kills}/${d.deaths}/${d.assists}`;
+        const value_text = `  ${
+          CharacterEmojis[d.character]
+        } ACS: ${d.acs.toFixed(0)} ${d.kills}/${d.deaths}/${d.assists}`;
         embed.addFields([
           {
             name: name_text,
@@ -76,8 +82,15 @@ export class CompetitiveCommand extends Command {
             inline: false,
           },
         ]);
+        const button_style =
+          d.win_lose === "Win" ? ButtonStyle.Success : ButtonStyle.Danger;
+        const button = new ButtonBuilder()
+          .setCustomId(`match.${d.match_id}`)
+          .setLabel(`${i + 1} ${d.map} ${d.win_lose}`)
+          .setStyle(button_style);
+        row.addComponents(button);
       });
-      await interaction.editReply({ embeds: [embed] });
+      await interaction.editReply({ embeds: [embed], components: [row] });
     } catch (error) {
       await sendErrorInfo(error, CompetitiveCommand.name, {
         name: "competitive",
