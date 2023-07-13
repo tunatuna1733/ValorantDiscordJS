@@ -1,5 +1,7 @@
 import { Command } from "@sapphire/framework";
 import { userMention } from "discord.js";
+import { client } from "..";
+import { CharacterEmojis } from "../constants/CharacterEmojis";
 
 export class HelloCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -29,7 +31,7 @@ export class HelloCommand extends Command {
     const user_mention = userMention(user_to_greet.id);
 
     return interaction.reply({
-      content: `Hey ${user_mention} <:AgentNeon:930135715478646795>`,
+      content: `Hey ${user_mention} ${CharacterEmojis.Neon}`,
       allowedMentions: {
         users: [user_to_greet.id],
       },
