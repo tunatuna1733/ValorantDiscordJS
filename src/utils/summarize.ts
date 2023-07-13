@@ -196,6 +196,10 @@ export const summarizaCompetitiveData = (data: RawMatchData, puuid: string) => {
     assists: data.players.all_players[player_index].stats.assists,
     win_lose: win_lose,
     map: data.metadata.map,
+    score: {
+      red: data.teams.red.rounds_won,
+      blue: data.teams.blue.rounds_won,
+    },
   };
   return summarized_data;
 };

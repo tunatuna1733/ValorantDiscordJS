@@ -1,6 +1,5 @@
 import { Command } from "@sapphire/framework";
 import { userMention } from "discord.js";
-import { client } from "..";
 import { CharacterEmojis } from "../constants/CharacterEmojis";
 
 export class HelloCommand extends Command {

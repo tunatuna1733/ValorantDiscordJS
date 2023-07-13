@@ -59,4 +59,8 @@ export type CompetitiveMatchSummary = {
   assists: number;
   win_lose: string;
   map: string;
+  score: {
+    blue: number;
+    red: number;
+  };
 };

@@ -85,7 +85,7 @@ export class LastmatchCommand extends Command {
         .setTitle(
           `${win_lose} ` + "```" + score_text + "```" + ` (${game_length}mins)`
         );
-      interaction.editReply({ embeds: [embed], files: [attachment] });
+      await interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (error) {
       await sendErrorInfo(error, LastmatchCommand.name, {
         name: "lastmatch",
