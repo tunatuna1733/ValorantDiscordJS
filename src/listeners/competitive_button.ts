@@ -23,6 +23,7 @@ export class ButtonHandler extends InteractionHandler {
   }
 
   public async run(interaction: ButtonInteraction, match_id: string) {
+    await interaction.deferReply();
     const match_data = await getMatchDataFromMatchID(match_id);
     const summarized_data = summarizeMatchData(match_data.data);
     const attachment = await image_generation.generateScoreboard(
