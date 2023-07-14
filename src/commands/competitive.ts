@@ -85,7 +85,7 @@ export class CompetitiveCommand extends Command {
         const button_style =
           d.win_lose === "Win" ? ButtonStyle.Success : ButtonStyle.Danger;
         const button = new ButtonBuilder()
-          .setCustomId(`match.${d.match_id}`)
+          .setCustomId(`match.${d.match_id}.${puuid}`)
           .setLabel(`${i + 1} ${d.map} ${d.win_lose}`)
           .setStyle(button_style);
         row.addComponents(button);
