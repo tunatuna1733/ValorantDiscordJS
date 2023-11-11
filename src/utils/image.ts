@@ -1,10 +1,10 @@
-import { Image, createCanvas, loadImage, GlobalFonts } from "@napi-rs/canvas";
-import * as promises from "fs/promises";
-import * as fs from "fs";
-import { AttachmentBuilder } from "discord.js";
-import { MatchSummary } from "../@types/summary_data";
-import { CharacterImage } from "../@types/character";
-import { ImageGenerationError } from "./error";
+import { Image, createCanvas, loadImage, GlobalFonts } from '@napi-rs/canvas';
+import * as promises from 'fs/promises';
+import * as fs from 'fs';
+import { AttachmentBuilder } from 'discord.js';
+import { MatchSummary } from '../@types/summary_data';
+import { CharacterImage } from '../@types/character';
+import { ImageGenerationError } from './error';
 
 export class ImageGeneration {
   character_images: CharacterImage;
@@ -77,6 +77,9 @@ export class ImageGeneration {
       Jett: await loadImage(
         `https://media.valorant-api.com/agents/add6443a-41bd-e414-f6ad-e58d267f4e95/displayicon.png`
       ),
+      Iso: await loadImage(
+        `https://media.valorant-api.com/agents/0e38b510-41a8-5780-5e8f-568b2a4f2d6c/displayicon.png`
+      ),
     };
     for (let i = 0; i <= 27; i++) {
       if (i === 1 || i === 2) continue;
@@ -85,29 +88,21 @@ export class ImageGeneration {
       );
       this.rank_images.push(rank_image);
     }
-    GlobalFonts.registerFromPath(
-      "assets/font/NotoSansJP-Regular.otf",
-      "NotoSans"
-    );
+    GlobalFonts.registerFromPath('assets/font/NotoSansJP-Regular.otf', 'NotoSans');
   };
 
   public generateScoreboard = async (data: MatchSummary) => {
     const file_name = `${data.metadata.match_id}.png`;
     if (!fs.existsSync(`tmp/${file_name}`)) {
       try {
-        const scoreboard_name =
-          data.metadata.win_team === "Red" ? "scoreboard1" : "scoreboard2";
+        const scoreboard_name = data.metadata.win_team === 'Red' ? 'scoreboard1' : 'scoreboard2';
         const canvas = createCanvas(1920, 1080);
-        const context = canvas.getContext("2d");
-        context.font = "48px NotoSans";
-        context.fillStyle = "#ffffff";
+        const context = canvas.getContext('2d');
+        context.font = '48px NotoSans';
+        context.fillStyle = '#ffffff';
         // draw background map image and scoreboard
-        const map_image = await loadImage(
-          `assets/map/${data.metadata.map}.png`
-        );
-        const scoreboard_image = await loadImage(
-          `assets/scoreboard/${scoreboard_name}.png`
-        );
+        const map_image = await loadImage(`assets/map/${data.metadata.map}.png`);
+        const scoreboard_image = await loadImage(`assets/scoreboard/${scoreboard_name}.png`);
         const additive_x = (canvas.width - scoreboard_image.width) / 2;
         const additive_y = (canvas.height - scoreboard_image.height) / 2;
         context.drawImage(map_image, 0, 0, canvas.width, canvas.height);
@@ -145,133 +140,48 @@ export class ImageGeneration {
           } else {
             rank = this.rank_images[player.currenttier - 2];
           }
-          context.drawImage(
-            character,
-            character_x,
-            coord_y,
-            character_icon_width,
-            character_icon_height
-          );
-          context.drawImage(
-            rank,
-            rank_x + 5,
-            coord_y + 5,
-            rank_icon_width,
-            rank_icon_height
-          );
+          context.drawImage(character, character_x, coord_y, character_icon_width, character_icon_height);
+          context.drawImage(rank, rank_x + 5, coord_y + 5, rank_icon_width, rank_icon_height);
           // draw info
-          context.fillText(
-            player.name,
-            name_x,
-            coord_y + text_y_additive,
-            rank_x - name_x
-          );
+          context.fillText(player.name, name_x, coord_y + text_y_additive, rank_x - name_x);
           if (player.stats.acs.toFixed(0).toString().length === 2) {
-            context.fillText(
-              " " + player.stats.acs.toFixed(0).toString(),
-              acs_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(' ' + player.stats.acs.toFixed(0).toString(), acs_x, coord_y + text_y_additive);
           } else {
-            context.fillText(
-              player.stats.acs.toFixed(0).toString(),
-              acs_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.acs.toFixed(0).toString(), acs_x, coord_y + text_y_additive);
           }
           if (player.stats.kills.toString().length === 1) {
-            context.fillText(
-              " " + player.stats.kills.toString(),
-              kills_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(' ' + player.stats.kills.toString(), kills_x, coord_y + text_y_additive);
           } else {
-            context.fillText(
-              player.stats.kills.toString(),
-              kills_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.kills.toString(), kills_x, coord_y + text_y_additive);
           }
           if (player.stats.deaths.toString().length === 1) {
-            context.fillText(
-              " " + player.stats.deaths.toString(),
-              deaths_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(' ' + player.stats.deaths.toString(), deaths_x, coord_y + text_y_additive);
           } else {
-            context.fillText(
-              player.stats.deaths.toString(),
-              deaths_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.deaths.toString(), deaths_x, coord_y + text_y_additive);
           }
           if (player.stats.assists.toString().length === 1) {
-            context.fillText(
-              " " + player.stats.assists.toString(),
-              assists_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(' ' + player.stats.assists.toString(), assists_x, coord_y + text_y_additive);
           } else {
-            context.fillText(
-              player.stats.assists.toString(),
-              assists_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.assists.toString(), assists_x, coord_y + text_y_additive);
           }
-          context.fillText(
-            player.stats.kd_rate.toFixed(1).toString(),
-            kd_x,
-            coord_y + text_y_additive
-          );
+          context.fillText(player.stats.kd_rate.toFixed(1).toString(), kd_x, coord_y + text_y_additive);
           if (player.stats.hs_rate.toFixed(0).toString().length === 1) {
-            context.fillText(
-              " " + player.stats.hs_rate.toFixed(0).toString(),
-              hs_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(' ' + player.stats.hs_rate.toFixed(0).toString(), hs_x, coord_y + text_y_additive);
           } else {
-            context.fillText(
-              player.stats.hs_rate.toFixed(0).toString(),
-              hs_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.hs_rate.toFixed(0).toString(), hs_x, coord_y + text_y_additive);
           }
           if (player.stats.econ.toFixed(0).toString().length === 3) {
-            context.fillText(
-              player.stats.econ.toFixed(0).toString(),
-              econ_x - 5,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.econ.toFixed(0).toString(), econ_x - 5, coord_y + text_y_additive);
           } else {
-            context.fillText(
-              player.stats.econ.toFixed(0).toString(),
-              econ_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.econ.toFixed(0).toString(), econ_x, coord_y + text_y_additive);
           }
-          context.fillText(
-            player.stats.kast.toFixed(0).toString(),
-            kast_x,
-            coord_y + text_y_additive
-          );
+          context.fillText(player.stats.kast.toFixed(0).toString(), kast_x, coord_y + text_y_additive);
           if (player.stats.first_bloods.toString().length === 2) {
-            context.fillText(
-              player.stats.first_bloods.toString(),
-              fb_x - 10,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.first_bloods.toString(), fb_x - 10, coord_y + text_y_additive);
           } else {
-            context.fillText(
-              player.stats.first_bloods.toString(),
-              fb_x,
-              coord_y + text_y_additive
-            );
+            context.fillText(player.stats.first_bloods.toString(), fb_x, coord_y + text_y_additive);
           }
-          context.fillText(
-            player.stats.first_deaths.toString(),
-            fd_x,
-            coord_y + text_y_additive
-          );
+          context.fillText(player.stats.first_deaths.toString(), fd_x, coord_y + text_y_additive);
           coord_y += players_y + between_players_y;
           if (i === 4) {
             coord_y += between_teams_y - between_players_y;
@@ -279,7 +189,7 @@ export class ImageGeneration {
         });
         // finally return discord attachment instance
         // for debug at this time
-        const canvas_data = await canvas.encode("png");
+        const canvas_data = await canvas.encode('png');
         await promises.writeFile(`tmp/${file_name}`, canvas_data);
       } catch (error) {
         throw new ImageGenerationError();

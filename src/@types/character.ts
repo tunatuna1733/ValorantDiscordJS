@@ -1,29 +1,30 @@
-import { Image } from "@napi-rs/canvas";
+import { Image } from '@napi-rs/canvas';
 
 export type Characters =
-  | "Gekko"
-  | "Fade"
-  | "Breach"
-  | "Deadlock"
-  | "Raze"
-  | "Chamber"
-  | "KAYO"
-  | "KAY/O"
-  | "Skye"
-  | "Cypher"
-  | "Sova"
-  | "Killjoy"
-  | "Harbor"
-  | "Viper"
-  | "Phoenix"
-  | "Astra"
-  | "Brimstone"
-  | "Neon"
-  | "Yoru"
-  | "Sage"
-  | "Reyna"
-  | "Omen"
-  | "Jett";
+  | 'Gekko'
+  | 'Fade'
+  | 'Breach'
+  | 'Deadlock'
+  | 'Raze'
+  | 'Chamber'
+  | 'KAYO'
+  | 'KAY/O'
+  | 'Skye'
+  | 'Cypher'
+  | 'Sova'
+  | 'Killjoy'
+  | 'Harbor'
+  | 'Viper'
+  | 'Phoenix'
+  | 'Astra'
+  | 'Brimstone'
+  | 'Neon'
+  | 'Yoru'
+  | 'Sage'
+  | 'Reyna'
+  | 'Omen'
+  | 'Jett'
+  | 'Iso';
 
 export type CharacterImage = {
   Gekko: Image;
@@ -48,4 +49,5 @@ export type CharacterImage = {
   Reyna: Image;
   Omen: Image;
   Jett: Image;
+  Iso: Image;
 };
