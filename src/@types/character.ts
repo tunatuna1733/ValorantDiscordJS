@@ -24,7 +24,8 @@ export type Characters =
   | 'Reyna'
   | 'Omen'
   | 'Jett'
-  | 'Iso';
+  | 'Iso'
+  | 'Clove';
 
 export type CharacterImage = {
   Gekko: Image;
@@ -50,4 +51,5 @@ export type CharacterImage = {
   Omen: Image;
   Jett: Image;
   Iso: Image;
+  Clove: Image;
 };
