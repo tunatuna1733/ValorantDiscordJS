@@ -83,6 +83,15 @@ export class ImageGeneration {
       Clove: await loadImage(
         `https://media.valorant-api.com/agents/1dbf2edd-4729-0984-3115-daa5eed44993/displayicon.png`
       ),
+      Tejo: await loadImage(
+        `https://media.valorant-api.com/agents/b444168c-4e35-8076-db47-ef9bf368f384/displayicon.png`
+      ),
+      Waylay: await loadImage(
+        `https://media.valorant-api.com/agents/df1cb487-4902-002e-5c17-d28e83e78588/displayicon.png`
+      ),
+      Vyse: await loadImage(
+        `https://media.valorant-api.com/agents/efba5359-4016-a1e5-7626-b1ae76895940/displayicon.png`
+      )
     };
     for (let i = 0; i <= 27; i++) {
       if (i === 1 || i === 2) continue;
